@@ -124,6 +124,9 @@ export const useFieldLike = <
   const [errors, setErrors] = useState<string[]>([]);
   const [isTouched, setIsTouched] = useState<boolean>(false);
   const [isDirty, setIsDirty] = useState<boolean>(false);
+  const [areFieldsDirty, setAreFieldsDirty] = useState<boolean>(false);
+  const [areFieldsTouched, setAreFieldsTouched] = useState<boolean>(false);
+  const [areFieldsValid, setAreFieldsValid] = useState<boolean>(true);
 
   const runFieldValidation = useCallback(
     (
@@ -205,6 +208,25 @@ export const useFieldLike = <
          * Placed into a `setTimeout` so that the `setValue` call can finish before the `onChangeListenerRefs` are called.
          */
         setTimeout(() => {
+          const fieldItems = formContext.formFieldsRef.current;
+
+          const isAnyFieldDirty = fieldItems.reduce(
+            (res, value) => res || value.isDirty,
+            false
+          );
+
+          const isAnyFieldTouched = fieldItems.reduce(
+            (res, value) => res || value.isTouched,
+            false
+          );
+          const areAllFieldsValid = fieldItems.reduce(
+            (res, value) => res && value.isValid,
+            true
+          );
+
+          setAreFieldsDirty(isAnyFieldDirty);
+          setAreFieldsTouched(isAnyFieldTouched);
+          setAreFieldsValid(areAllFieldsValid);
           formContext.onChangeListenerRefs.current[props.name]?.forEach((fn) =>
             fn()
           );
@@ -228,9 +250,15 @@ export const useFieldLike = <
     setIsDirty,
     setIsTouched,
     setValue,
+    setAreFieldsDirty,
+    setAreFieldsValid,
+    setAreFieldsTouched,
     isTouched,
     isDirty,
     isValid,
+    areFieldsDirty,
+    areFieldsValid,
+    areFieldsTouched,
     runFieldValidation,
     valueRef,
     _normalizedDotName,

@@ -26,6 +26,7 @@ function FieldArrayComp<T = any, F = any>(
   props: FieldArrayRenderProps<T, F>,
   ref: ForwardedRef<FieldArrayInstance<T, F>>
 ) {
+
   const {
     value,
     errors,
@@ -39,6 +40,12 @@ function FieldArrayComp<T = any, F = any>(
     valueRef,
     setIsDirty,
     setIsTouched,
+    areFieldsDirty,
+    areFieldsTouched,
+    areFieldsValid,
+    setAreFieldsDirty,
+    setAreFieldsTouched,
+    setAreFieldsValid
   } = useFieldLike<T, F, FieldArrayInstance<T, F>>({
     props,
     initialValue: [] as T[],
@@ -147,6 +154,12 @@ function FieldArrayComp<T = any, F = any>(
       isDirty,
       setIsTouched,
       isTouched,
+      areFieldsDirty,
+      setAreFieldsDirty,
+      areFieldsTouched,
+      setAreFieldsTouched,
+      areFieldsValid,
+      setAreFieldsValid
     };
   }, [
     value,
@@ -166,6 +179,12 @@ function FieldArrayComp<T = any, F = any>(
     isDirty,
     setIsTouched,
     isTouched,
+    areFieldsDirty,
+    setAreFieldsDirty,
+    areFieldsTouched,
+    setAreFieldsTouched,
+    areFieldsValid,
+    setAreFieldsValid
   ]);
 
   const mutableRef = useRef<FieldArrayInstance<T, F>>(fieldArrayInstance);

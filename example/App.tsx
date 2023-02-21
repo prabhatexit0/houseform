@@ -1,8 +1,58 @@
 import { Field, Form } from "houseform";
+import { FieldArray, FieldArrayItem } from "houseform"; 
+import { useRef } from "react";
 import { z } from "zod";
 
 export default function App() {
+  const test = useRef(null)
+  const fieldItemsRef =  useRef<any[]>([])
+
+  const handleSubmit = () => {
+    console.log("FieldArray: ", test.current)
+    console.log("Field Items: ", fieldItemsRef.current)
+  }
+
   return (
+    <Form
+      onSubmit={(values) => {
+        alert("Form was submitted with: " + JSON.stringify(values));
+      }}
+    >
+      {() => (
+        <>
+          <FieldArray<{ name: string }>
+            ref={test}
+            name="people"
+            initialValue={[{ name: "Corbin" }]}
+          >
+            {({ value, add }) => (
+              <>
+                {value.map((person, i) => (
+                  <FieldArrayItem<string> name={`people[${i}].name`} key={i} ref={(element) => fieldItemsRef.current[i] = element}>
+                    {({ value, setValue }) => {
+                      return (
+                        <input
+                          value={value}
+                          onChange={(e) => setValue(e.target.value)}
+                        />
+                      );
+                    }}
+                  </FieldArrayItem>
+                ))}
+                <button onClick={() => add({ name: "Other" })}>Add</button>
+              </>
+            )}
+          </FieldArray>
+          <br/>
+          <button onClick={handleSubmit}>Submit</button>
+        </>
+      )}
+    </Form>
+  )
+}
+
+function ExampleFeildForm() {
+  return <div>
     <Form
       onSubmit={(values) => {
         alert("Form was submitted with: " + JSON.stringify(values));
@@ -92,7 +142,7 @@ export default function App() {
         </form>
       )}
     </Form>
-  );
+  </div>
 }
 
 function isEmailUnique(val: string) {
